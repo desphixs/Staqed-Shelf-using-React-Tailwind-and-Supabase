@@ -50,13 +50,18 @@ const AppLayout = () => {
   );
 };
 
+import { Toaster } from 'sonner';
+
 const App = () => {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <AppLayout />
-      </BrowserRouter>
-    </AuthProvider>
+    <>
+      <Toaster position="bottom-right" richColors />
+      <AuthProvider>
+        <BrowserRouter>
+          <AppLayout />
+        </BrowserRouter>
+      </AuthProvider>
+    </>
   );
 }
 
