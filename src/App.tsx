@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import AuthPage from "./pages/AuthPage";
 import ShelfPage from "./pages/ShelfPage";
 import AddBookPage from "./pages/AddBookPage";
+import EditBookPage from "./pages/EditBookPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 
@@ -39,6 +40,14 @@ const AppLayout = () => {
           element={
             <ProtectedRoute>
               <AddBookPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/edit/:id" 
+          element={
+            <ProtectedRoute>
+              <EditBookPage />
             </ProtectedRoute>
           } 
         />

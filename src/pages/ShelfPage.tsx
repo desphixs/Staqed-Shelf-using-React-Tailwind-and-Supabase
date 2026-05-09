@@ -38,6 +38,11 @@ const ShelfPage = () => {
     return book.status === filter;
   });
 
+  // Handle local state update when a book is deleted
+  const handleDeleteBook = (id) => {
+    setBooks((prev) => prev.filter((book) => book.id !== id));
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
@@ -88,7 +93,11 @@ const ShelfPage = () => {
           // Book Grid (The "Shelf")
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <BookCard 
+                key={book.id} 
+                book={book} 
+                onDelete={handleDeleteBook} 
+              />
             ))}
           </div>
         ) : (

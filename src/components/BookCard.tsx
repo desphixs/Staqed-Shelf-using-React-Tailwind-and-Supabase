@@ -1,6 +1,12 @@
-import { Star } from "lucide-react";
+import { Star, Edit2, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { toast } from "sonner";
+import { useState } from "react";
 
-const BookCard = ({ book }) => {
+const BookCard = ({ book, onDelete }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   // Helper to determine badge color and text based on status
   const getStatusBadge = (status) => {
     switch (status) {
@@ -16,14 +22,49 @@ const BookCard = ({ book }) => {
 
   const badge = getStatusBadge(book.status);
 
+  const handleDelete = async () => {
+    if (!window.confirm(`Are you sure you want to delete "${book.title}"?`)) return;
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase.from("books").delete().eq("id", book.id);
+      if (error) throw error;
+
+      toast.success("Book deleted successfully");
+      onDelete(book.id); // Update local state in parent
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      toast.error("Failed to delete book");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col h-full relative group">
       
-      {/* Top Section: Status Badge */}
-      <div className="mb-4">
+      {/* Top Section: Status Badge & Actions */}
+      <div className="flex justify-between items-start mb-4">
         <span className={`px-3 py-1 rounded-full text-xs font-bold border ${badge.color} inline-block`}>
           {badge.label}
         </span>
+        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Link
+            to={`/edit/${book.id}`}
+            className="p-2 bg-slate-50 text-slate-400 hover:text-[#A66206] hover:bg-orange-50 rounded-xl transition-all"
+            title="Edit Book"
+          >
+            <Edit2 className="w-4 h-4" />
+          </Link>
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="p-2 bg-slate-50 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all disabled:opacity-50"
+            title="Delete Book"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Title & Author */}
@@ -67,3 +108,4 @@ const BookCard = ({ book }) => {
 };
 
 export default BookCard;
+
